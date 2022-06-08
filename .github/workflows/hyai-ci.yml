@@ -55,5 +55,7 @@ jobs:
 
     - name: pytest
       working-directory: ./src
+      env:
+        PYTHONPATH: ${{ github.workspace }}/src
       run: pytest tests
 
