@@ -16,13 +16,22 @@ jobs:
         with:
           fetch-depth: 0
 
+      # - name: Bump version
+      #   id: bump-version
+      #   uses: mathieudutour/github-tag-action@v5.5
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     release_branches: development
+      #     custom_release_rules: major:major, minor:minor
+      #   if: ${{ github.ref_name == 'development' }}
+
       - name: Bump version
-        id: bump-version
-        uses: mathieudutour/github-tag-action@v5.5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: development
-          custom_release_rules: major:major, minor:minor
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+          RELEASE_BRANCHES: development
+          WITH_V: true
         if: ${{ github.ref_name == 'development' }}
 
       - name: Get version
