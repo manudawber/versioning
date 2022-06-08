@@ -29,7 +29,7 @@ jobs:
 
     - name: Black
       working-directory: ./src
-      run: black --check
+      run: black --check .
       continue-on-error: true
 
     - name: Flake8
