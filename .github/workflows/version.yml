@@ -15,24 +15,26 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Bump version and push tag
-        id: version
-        uses: mathieudutour/github-tag-action@v5.5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: main
-          pre_release_branches: development
-          append_to_pre_release_tag: dev
-          custom_release_rules: major:major, minor:minor
-
       # - name: Bump version and push tag
       #   id: version
-      #   uses: anothrNick/github-tag-action@1.36.0
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     DEFAULT_BUMP: patch
-      #     WITH_V: true
-      #     RELEASE_BRANCHES: main
+      #   uses: mathieudutour/github-tag-action@v5.5
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     release_branches: main
+      #     pre_release_branches: development
+      #     append_to_pre_release_tag: dev
+      #     custom_release_rules: major:major, minor:minor
+
+      - name: Bump version and push tag
+        id: version
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+          
+          WITH_V: true
+          RELEASE_BRANCHES: main
+          PRERELEASE_SUFFIX: ${{ github.ref_name }}
 
       # - name: Create GitHub release
       #   uses: actions/create-release@v1
