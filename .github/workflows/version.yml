@@ -49,9 +49,9 @@ jobs:
           release_branches: main
           pre_release_branches: staging,staging
           append_to_pre_release_tag: rc
-        if: ${{ github.ref_name == 'production' }}
+        if: ${{ github.ref_name == 'main' }}
       - run: echo "Next ${{ steps.version-staging.outputs.changelog }}"
-        if: ${{ github.ref_name == 'production' }}
+        if: ${{ github.ref_name == 'main' }}
 
       # - name: Bump version and push tag
       #   id: version
