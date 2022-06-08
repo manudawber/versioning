@@ -34,7 +34,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: main
           default_bump: false
-        dry_run: true
+          dry_run: true
         if: ${{ github.ref_name }} == staging
       - run: echo "Prev ${{ steps.version-staging.outputs.previous_tag }}"
         if: ${{ github.ref_name }} == staging
