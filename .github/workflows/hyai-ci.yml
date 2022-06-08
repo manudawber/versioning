@@ -36,3 +36,24 @@ jobs:
       working-directory: ./src
       run: flake8
       continue-on-error: true
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: jobs
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.8'
+
+    - name: Install dependencies
+      run: pip install pytest
+
+    - name: pytest
+      working-directory: ./src
+      run: pytest tests
+
