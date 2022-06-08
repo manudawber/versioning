@@ -26,6 +26,7 @@ jobs:
       #   if: ${{ github.ref_name == 'development' }}
 
       - name: Bump version
+        id: bump-version
         uses: anothrNick/github-tag-action@1.36.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -34,17 +35,28 @@ jobs:
           WITH_V: true
         if: ${{ github.ref_name == 'development' }}
 
-      - name: Get version
+      # - name: Get version
+      #   id: get-version
+      #   uses: mathieudutour/github-tag-action@v5.5
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     release_branches: development
+      #     custom_release_rules: major:major, minor:minor
+      #     default_bump: false
+      #     dry_run: true
+      #   if: ${{ github.ref_name == 'staging' || github.ref_name == 'main' }}
+      # - run: echo "Version ${{ steps.get-version.outputs.previous_tag }}"
+      #   if: ${{ github.ref_name == 'staging' || github.ref_name == 'main' }}
+
+      - name: Bump version
         id: get-version
-        uses: mathieudutour/github-tag-action@v5.5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: development
-          custom_release_rules: major:major, minor:minor
-          default_bump: false
-          dry_run: true
-        if: ${{ github.ref_name == 'staging' || github.ref_name == 'main' }}
-      - run: echo "Version ${{ steps.get-version.outputs.previous_tag }}"
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: none
+          RELEASE_BRANCHES: development
+          WITH_V: true
+          DRY_RUN: true
         if: ${{ github.ref_name == 'staging' || github.ref_name == 'main' }}
 
       - name: Create release
