@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - development
+    - staging
     - main
 
 jobs:
@@ -15,25 +16,49 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Bump version - development
+        id: version-dev
+        uses: mathieudutour/github-tag-action@v5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
+          pre_release_branches: development
+          append_to_pre_release_tag: rc
+          custom_release_rules: major:major, minor:minor
+        if: ${{ github.ref_name == 'development' }}
+
+      - name: Get version - staging
+        id: version-staging
+        uses: mathieudutour/github-tag-action@v5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
+          default_bump: false
+          dry_run: true
+        if: ${{ github.ref_name == 'staging' }}
+      - run: echo "Prev ${{ steps.version-staging.outputs.previous_tag }}"
+        if: ${{ github.ref_name == 'staging' }}
+      - run: echo "Next ${{ steps.version-staging.outputs.new_tag }}"
+        if: ${{ github.ref_name == 'staging' }}
+
+      - name: Bump version - production
+        id: version-production
+        uses: mathieudutour/github-tag-action@v5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
+        if: ${{ github.ref_name == 'production' }}
+
       # - name: Bump version and push tag
       #   id: version
-      #   uses: mathieudutour/github-tag-action@v5.5
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     release_branches: main
-      #     pre_release_branches: development
-      #     append_to_pre_release_tag: dev
-      #     custom_release_rules: major:major, minor:minor
-
-      - name: Bump version and push tag
-        id: version
-        uses: anothrNick/github-tag-action@1.36.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BUMP: patch
-          WITH_V: true
-          RELEASE_BRANCHES: main
-          PRERELEASE_SUFFIX: ${{ github.ref_name }}
+      #   uses: anothrNick/github-tag-action@1.36.0
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     DEFAULT_BUMP: patch
+      #     WITH_V: true
+      #     RELEASE_BRANCHES: main
+      #     PRERELEASE_SUFFIX: ${{ github.ref_name }}
+      #   if: ${{ github.ref_name }} == development
 
       # - name: Create GitHub release
       #   uses: actions/create-release@v1
