@@ -64,7 +64,7 @@ jobs:
       #     PRERELEASE_SUFFIX: ${{ github.ref_name }}
       #   if: ${{ github.ref_name }} == development
 
-      - name: Bump version - development
+      - name: Bump version
         id: bump-version
         uses: mathieudutour/github-tag-action@v5.5
         with:
@@ -86,11 +86,11 @@ jobs:
       - run: echo "Version ${{ steps.get-version.outputs.previous_tag }}"
         if: ${{ github.ref_name == 'staging' || github.ref_name == 'main' }}
 
-      - name: Create GitHub release
+      - name: Create release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.get-version.outputs.new_tag }}
-          release_name: Release ${{ steps.get-version.outputs.new_tag }}
+          tag_name: ${{ steps.get-version.outputs.previous_tag }}
+          release_name: Release ${{ steps.get-version.outputs.previous_tag }}
         if: ${{ github.ref_name == 'main' }}
