@@ -1,0 +1,38 @@
+name: HyAI CI
+
+on:
+  pull_request:
+    branches:
+    - development
+
+env:
+  WORKLOAD_ID_PROJECT_NUMBER: 785231956912
+  WORKLOAD_ID_POOL: h2go-github-pool
+  WORKLOAD_ID_PROVIDER: h2go-github-provider
+  SERVICE_ACCOUNT: sa-hyai-runner@hyai-development-fbbb.iam.gserviceaccount.com
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.8'
+
+    - name: Install dependencies
+      run: pip install black flake8
+
+    - name: Black
+      working-directory: ./src
+      run: black --check
+      continue-on-error: true
+
+    - name: Flake8
+      working-directory: ./src
+      run: flake8
+      continue-on-error: true
