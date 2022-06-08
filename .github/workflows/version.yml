@@ -26,7 +26,8 @@ jobs:
       #     custom_release_rules: major:major, minor:minor
 
       - name: Bump version and push tag
-        od: version
+        id: version
+        
         uses: anothrNick/github-tag-action@1.36.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
