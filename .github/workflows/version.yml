@@ -80,9 +80,10 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: staging
           custom_release_rules: major:major, minor:minor
+          default_bump: false
           dry_run: true
         if: ${{ github.ref_name == 'staging' || github.ref_name == 'main' }}
-      - run: echo "Version ${{ steps.version-staging.outputs.previous_tag }}"
+      - run: echo "Version ${{ steps.get-version.outputs.previous_tag }}"
         if: ${{ github.ref_name == 'staging' || github.ref_name == 'main' }}
 
       - name: Create GitHub release
