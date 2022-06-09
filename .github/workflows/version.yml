@@ -1,96 +1,43 @@
-name: Test Versioning
+name: Versioning
 
 on:
   push:
     branches:
     - development
-    - staging
     - main
 
 jobs:
   version:
     runs-on: ubuntu-latest
     steps:
-    
-      - uses: actions/checkout@v2
+
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      # - name: Bump version - development
-      #   id: version-dev
-      #   uses: mathieudutour/github-tag-action@v5.5
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     release_branches: main
-      #     pre_release_branches: development,staging
-      #     append_to_pre_release_tag: rc
-      #     custom_release_rules: major:major, minor:minor
-      #   if: ${{ github.ref_name == 'development' }}
-
-      # - name: Get version - staging
-      #   id: version-staging
-      #   uses: mathieudutour/github-tag-action@v5.5
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     release_branches: main
-      #     pre_release_branches: staging,staging
-      #     append_to_pre_release_tag: rc
-      #     default_bump: false
-      #     dry_run: true
-      #   if: ${{ github.ref_name == 'staging' }}
-      # - run: echo "Prev ${{ steps.version-staging.outputs.previous_tag }}"
-      #   if: ${{ github.ref_name == 'staging' }}
-
-      # - name: Bump version - production
-      #   id: version-production
-      #   uses: mathieudutour/github-tag-action@v5.5
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     release_branches: main
-      #     pre_release_branches: staging,staging
-      #     append_to_pre_release_tag: rc
-      #   if: ${{ github.ref_name == 'main' }}
-      # - run: echo "Next ${{ steps.version-staging.outputs.changelog }}"
-      #   if: ${{ github.ref_name == 'main' }}
-
-      # - name: Bump version and push tag
-      #   id: version
-      #   uses: anothrNick/github-tag-action@1.36.0
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     DEFAULT_BUMP: patch
-      #     WITH_V: true
-      #     RELEASE_BRANCHES: main
-      #     PRERELEASE_SUFFIX: ${{ github.ref_name }}
-      #   if: ${{ github.ref_name }} == development
 
       - name: Bump version
         id: bump-version
         uses: mathieudutour/github-tag-action@v5.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: development
+          release_branches: main
+          pre_release_branches: development
+          append_to_pre_release_tag: dev
           custom_release_rules: major:major, minor:minor
-        if: ${{ github.ref_name == 'development' }}
 
-      - name: Get version
-        id: get-version
-        uses: mathieudutour/github-tag-action@v5.5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: staging
-          custom_release_rules: major:major, minor:minor
-          default_bump: false
-          dry_run: true
-        if: ${{ github.ref_name == 'staging' || github.ref_name == 'main' }}
-      - run: echo "Version ${{ steps.get-version.outputs.previous_tag }}"
-        if: ${{ github.ref_name == 'staging' || github.ref_name == 'main' }}
+      - run: |
+          echo ${{ steps.bump-version.outputs.new_tag }}
+          echo ${{ steps.bump-version.outputs.new_version }}
+          echo ${{ steps.bump-version.outputs.previous_tag }}
+          echo ${{ steps.bump-version.outputs.previous_version }}
+          echo ${{ steps.bump-version.outputs.release_type }}
+          echo ${{ steps.bump-version.outputs.changelog }}
 
-      - name: Create release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.get-version.outputs.previous_tag }}
-          release_name: Release ${{ steps.get-version.outputs.previous_tag }}
-        if: ${{ github.ref_name == 'main' }}
+#      - name: Create release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ steps.get-version.outputs.previous_tag }}
+#          release_name: Release ${{ steps.get-version.outputs.previous_tag }}
+#        if: ${{ github.ref_name == 'main' }}
