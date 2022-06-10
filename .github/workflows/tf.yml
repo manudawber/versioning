@@ -1,0 +1,39 @@
+name: Terraform Apply
+
+on:
+  push:
+    branches:
+    - development
+    - staging
+    - main
+
+env:
+  DEVELOPMENT_BRANCH: development
+  STAGING_BRANCH: staging
+  PRODUCTION_BRANCH: main
+
+jobs:
+  apply:
+    name: Apply
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get environment from branch name
+      run: |
+        if [ "${{ github.ref_name }}" = "${{ env.DEVELOPMENT_BRANCH }}" ]; then
+          echo "ENVIRONMENT=development" >> $GITHUB_ENV
+        elif [ "${{ github.ref_name }}" = "${{ env.STAGING_BRANCH }}" ]; then
+          echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+        elif [ "${{ github.ref_name }}" = "${{ env.PRODUCTION_BRANCH }}" ]; then
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+        else
+          echo "Unable to get environment from branch name."
+          exit 1
+        fi
+
+    - name: Fake Terraform apply
+      run: |
+        echo "working-directory: ./terraform/environments/${{ env.ENVIRONMENT }}"
+
