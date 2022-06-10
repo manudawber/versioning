@@ -25,13 +25,20 @@ jobs:
           append_to_pre_release_tag: dev
           custom_release_rules: major:major, minor:minor
 
-      - run: |
+      - name: Print step outputs
+        run: |
           echo ${{ steps.bump-version.outputs.new_tag }}
           echo ${{ steps.bump-version.outputs.new_version }}
           echo ${{ steps.bump-version.outputs.previous_tag }}
           echo ${{ steps.bump-version.outputs.previous_version }}
           echo ${{ steps.bump-version.outputs.release_type }}
           echo ${{ steps.bump-version.outputs.changelog }}
+
+      - name: Print GitHub context
+        run: |
+          echo "ref: ${{ github.ref }}"
+          echo "ref_name: ${{ github.ref_name }}"
+          echo "base_ref: ${{ github.base_ref }}"
 
 #      - name: Create release
 #        uses: actions/create-release@v1
